@@ -21,16 +21,14 @@ sys.path.insert(0, str(Path(__file__).parent))
 
 ROOT_DIR = Path(__file__).parent
 
-# Load .env file only if it exists (for local development)
-env_file = ROOT_DIR / '.env'
-if env_file.exists():
-    load_dotenv(env_file)
+# Only load .env file for local development, NOT on Railway
+if not os.getenv('RAILWAY_ENVIRONMENT'):
+    env_file = ROOT_DIR / '.env'
+    if env_file.exists():
+        load_dotenv(env_file)
 
-# MongoDB connection - use environment variable directly
+# MongoDB connection
 mongo_url = os.environ.get('MONGO_URL', 'mongodb://localhost:27017/sixthsense')
-if not mongo_url.startswith('mongodb'):
-    mongo_url = 'mongodb://localhost:27017/sixthsense'
-    
 client = AsyncIOMotorClient(mongo_url)
 db_name = os.environ.get('DB_NAME', 'sixthsense')
 db = client[db_name]
