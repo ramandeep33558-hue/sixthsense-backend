@@ -9,6 +9,7 @@ PyJWT==2.8.0
 passlib[bcrypt]==1.7.4
 bcrypt==4.0.1
 pydantic==2.5.0
+email-validator==2.1.0
 python-multipart==0.0.6
 stripe==8.0.0
 APScheduler==3.10.4
