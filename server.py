@@ -20,12 +20,20 @@ sys.path.insert(0, str(Path(__file__).parent))
 
 ROOT_DIR = Path(__file__).parent
 
-# MongoDB connection - directly use environment variable
+# MongoDB connection settings
 mongo_url = os.getenv('MONGO_URL', 'mongodb://localhost:27017/sixthsense')
-print(f"Connecting to MongoDB: {mongo_url[:30]}...")
-client = AsyncIOMotorClient(mongo_url)
 db_name = os.getenv('DB_NAME', 'sixthsense')
-db = client[db_name]
+
+# Initialize MongoDB client with retry
+def get_db():
+    try:
+        client = AsyncIOMotorClient(mongo_url, serverSelectionTimeoutMS=5000)
+        return client[db_name]
+    except Exception as e:
+        print(f"MongoDB connection error: {e}")
+        raise
+
+db = get_db()
 
 # Create the main app
 app = FastAPI(title="Psychic Marketplace API", version="1.0.0")
