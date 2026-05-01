@@ -1,6 +1,5 @@
 from fastapi import FastAPI, APIRouter
 from fastapi.staticfiles import StaticFiles
-from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
 import os
@@ -21,16 +20,11 @@ sys.path.insert(0, str(Path(__file__).parent))
 
 ROOT_DIR = Path(__file__).parent
 
-# Only load .env file for local development, NOT on Railway
-if not os.getenv('RAILWAY_ENVIRONMENT'):
-    env_file = ROOT_DIR / '.env'
-    if env_file.exists():
-        load_dotenv(env_file)
-
-# MongoDB connection
-mongo_url = os.environ.get('MONGO_URL', 'mongodb://localhost:27017/sixthsense')
+# MongoDB connection - directly use environment variable
+mongo_url = os.getenv('MONGO_URL', 'mongodb://localhost:27017/sixthsense')
+print(f"Connecting to MongoDB: {mongo_url[:30]}...")
 client = AsyncIOMotorClient(mongo_url)
-db_name = os.environ.get('DB_NAME', 'sixthsense')
+db_name = os.getenv('DB_NAME', 'sixthsense')
 db = client[db_name]
 
 # Create the main app
